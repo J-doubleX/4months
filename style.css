@@ -1,0 +1,211 @@
+/* --- General Setup --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: radial-gradient(circle at center, #2e000e 0%, #0c0005 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Changed from flex-end to center the whole app */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    padding: 20px;
+    color: #fff;
+}
+
+.container {
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px; /* Gives invisible padding on top so the letter has space to slide up */
+}
+
+/* --- Cooler, Magical Background Roses --- */
+#rose-garden {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.floating-rose {
+    position: absolute;
+    color: #ff4d6d;
+    font-size: 2rem;
+    filter: drop-shadow(0 0 10px #ff0040);
+    animation: riseAndFade 8s ease-in infinite;
+    opacity: 0;
+}
+
+@keyframes riseAndFade {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.7; }
+    80% { opacity: 0.7; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+}
+
+/* --- Centerpiece Rose --- */
+.center-rose {
+    font-size: 4rem; /* Slightly smaller for mobile balancing */
+    color: #e01e37;
+    filter: drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #ff0040);
+    margin-bottom: 25px;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #ff0040); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 30px #ff4d6d) drop-shadow(0 0 60px #ff4d6d); transform: scale(1.05); }
+}
+
+/* --- Interactive Envelope (Mobile Responsive) --- */
+.envelope-wrapper {
+    position: relative;
+    cursor: pointer;
+    width: 200px;
+    height: 140px;
+    background-color: #800e2b;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 10px 40px rgba(255,0,64,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Envelope Flap */
+.envelope-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 100px solid transparent;
+    border-right: 100px solid transparent;
+    border-top: 85px solid #a4133c;
+    transform-origin: top;
+    transition: transform 0.4s ease 0.2s;
+    z-index: 4;
+}
+
+/* Envelope Front Pockets */
+.envelope-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-left: 100px solid #c9184a;
+    border-right: 100px solid #c9184a;
+    border-top: 75px solid transparent;
+    border-bottom: 65px solid #c9184a;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    z-index: 3;
+}
+
+/* The Rose Seal */
+.rose-seal {
+    position: absolute;
+    top: 65px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    z-index: 5;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    filter: drop-shadow(0 0 10px #ff4d6d);
+}
+
+/* --- Message Card (Mobile Safe Layout) --- */
+.card {
+    background: #1a0108;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid #ff4d6d;
+    box-shadow: 0 10px 30px rgba(255,0,64,0.3);
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 190px;
+    height: 125px;
+    z-index: 2;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #fff;
+}
+
+.card h1 {
+    color: #ff4d6d;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px #ff0040;
+    transition: font-size 0.4s ease;
+}
+
+.card p {
+    color: #ffdce5;
+    font-size: 0.65rem;
+    line-height: 1.4;
+    transition: font-size 0.4s ease;
+}
+
+.card .date {
+    font-weight: bold;
+    color: #e01e37;
+    margin-top: 5px;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+}
+
+/* --- Open Envelope State --- */
+.envelope-wrapper.open::before {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+.envelope-wrapper.open .rose-seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+}
+
+/* Pull the letter up cleanly without breaking phone aspect ratios */
+.envelope-wrapper.open .card {
+    transform: translateY(-150px);
+    z-index: 10;
+    height: auto;
+    width: 290px; /* Expands wider to fit mobile screens beautifully */
+    left: -45px;  /* Centers the newly widened card perfectly over the envelope */
+    padding: 22px;
+}
+
+/* Clean text expansion for readability when opened */
+.envelope-wrapper.open .card h1 { font-size: 1.2rem; margin-bottom: 12px; }
+.envelope-wrapper.open .card p { font-size: 0.88rem; line-height: 1.5; margin-bottom: 8px; }
+.envelope-wrapper.open .card .date { font-size: 0.75rem; margin-top: 5px; }
+
+.instruction {
+    color: #ff4d6d;
+    font-weight: bold;
+    margin-top: 35px;
+    font-size: 1rem;
+    transition: transform 0.4s ease;
+    animation: pulse-text 1.5s infinite;
+    text-shadow: 0 0 10px rgba(255,0,64,0.5);
+}
+
+@keyframes pulse-text {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
